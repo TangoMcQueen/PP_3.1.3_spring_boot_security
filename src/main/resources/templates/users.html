@@ -3,44 +3,57 @@
       xmlns:c="http://java.sun.com/xml/ns/javaee">
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Users</title>
+    <meta charset="UTF-8">
+    <title>Users</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
 </head>
 <body>
 <h1>All Users</h1>
 <table border="1">
-  <tr>
-    <th>id</th>
-    <th>name</th>
-    <th>age</th>
-    <th>email</th>
-    <th colspan="2">operations</th>
-  </tr>
-  <tr th:each="user : ${users}">
-    <td th:text="${user.getId()}"></td>
-    <td th:text="${user.getName()}"></td>
-    <td th:text="${user.getAge()}"></td>
-    <td th:text="${user.getEmail()}"></td>
-    <td><a th:href="@{/admin/users/{id}(id=${user.getId()})}">
-      <input type="submit" value="update">
-    </a>
-    </td>
-    <td>
-      <form th:method="DELETE" th:action="@{/admin/users/{id}(id=${user.getId()})}">
-        <input type="submit" value="delete">
-      </form>
-    </td>
-  </tr>
+    <tr>
+        <th>id</th>
+        <th>Name</th>
+        <th>Last Name</th>
+        <th>Age</th>
+        <th>E-mail</th>
+        <th>Username</th>
+        <th>Password</th>
+        <th>Roles</th>
+
+        <th colspan="2">Operations</th>
+    </tr>
+    <tr th:each="user : ${users}">
+        <td th:text="${user.getId()}"></td>
+        <td th:text="${user.getName()}"></td>
+        <td th:text="${user.getLastName()}"></td>
+        <td th:text="${user.getAge()}"></td>
+        <td th:text="${user.getEmail()}"></td>
+        <td th:text="${user.getUsername()}"></td>
+        <td th:text="${user.getPassword()}"></td>
+        <td th:text="${user.roleToString()}"></td>
+
+        <td>
+            <form th:action="@{user/{id}(id=${user.id})}" th:method="GET">
+                <input type="submit" value="View user"></form>
+            <br/>
+            <form th:action="@{{id}/update(id=${user.id})}">
+                <input type="submit" value="Update info"></form>
+            <br/>
+            <form th:action="@{admin/delete/{id}(id=${user.getId})}" th:method="DELETE">
+                <input type="submit" value="Delete user"></form>
+        </td>
+    </tr>
 </table>
 
-<br>
-
-<input type="button" value="Add User"
- onclick="window.location.href='/admin/new'"/>
-
-<br>
-
-<input type="button" value="logout"
-       onclick="window.location.href='/logout'"/>
-
+<p>Add new user</p>
+<form action="/admin/add" target="_blank">
+    <button>New user</button>
+</form>
+<br/><br/>
+<p>Return to<a href="/">main page</a></p>
+<form th:method="POST" th:action="@{/logout}">
+    <input type="submit" value="Logout!"/>
+</form>
+</div>
 </body>
+</html>

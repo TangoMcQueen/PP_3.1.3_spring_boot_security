@@ -1,0 +1,51 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <title>Personal page</title>
+  <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<h1>Admin page</h1>
+<br/><br/>
+<div>
+
+  <h2>Welcome, <span th:text="${admin.getUsername()}">VALUE</span> </h2>
+  <table border="1">
+    <tr>
+      <th>id</th>
+      <th>Name</th>
+      <th>Last Name</th>
+      <th>Age</th>
+      <th>E-mail</th>
+      <th>Username</th>
+      <th>Password</th>
+      <th>Roles</th>
+    </tr>
+    <tr th:each="user : ${users}">
+      <td th:text="${user.getId()}"></td>
+      <td th:text="${user.getName()}"></td>
+      <td th:text="${user.getLastName()}"></td>
+      <td th:text="${user.getAge()}"></td>
+      <td th:text="${user.getEmail()}"></td>
+      <td th:text="${user.getUsername()}"></td>
+      <td th:text="${user.getPassword()}"></td>
+      <td th:text="${user.roleToString()}"></td>
+    </tr>
+  </table>
+
+  <p>View all users</p>
+  <form action="/admin/users" target="_blank">
+    <button>All users</button></form>
+  <p>Добавить нового пользователя</p>
+  <form action="/admin/add" target="_blank">
+    <button>New user</button></form>
+  <br/><br/>
+  <p> Return to <a href="/">main page</a></p>
+  <form th:method="POST" th:action="@{/logout}">
+    <input type="submit" value="Logout!"/>
+  </form>
+
+</div>
+</body>
+</html>

@@ -3,25 +3,35 @@ package ru.kata.spring.boot_security.demo.model;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+
 
 @Entity
-@Table (name = "roles3")
+@Table (name = "roles")
 public class Role implements GrantedAuthority {
 
     @Id
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column
+
+    @Column (name = "name")
     private String name;
-    @ManyToMany(mappedBy = "roles")
-    private List<User> users = new ArrayList<>();
-    public Role(String name) {
+
+    @ManyToMany(mappedBy = "roleList", cascade = CascadeType.ALL)
+    private List<User> users;
+
+    public Role() {
+    }
+
+    public Role(Long id, String name) {
+        this.id = id;
         this.name = name;
     }
 
-    public Role() {
+    public Role(String name) {
+        this.name = name;
     }
 
     public Long getId() {
@@ -49,7 +59,35 @@ public class Role implements GrantedAuthority {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Role role = (Role) o;
+        return id.equals(role.id) && name.equals(role.name) && users.equals(role.users);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, users);
+    }
+
+    @Override
+    public String toString() {
+        return "Role{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", users=" + users +
+                '}';
+    }
+
+    @Override
     public String getAuthority() {
         return getName();
     }
+
+    public String getNameRole(){
+        return name.substring("ROLE_".length());
+    }
+
+
 }

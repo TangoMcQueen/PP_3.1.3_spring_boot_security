@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add_user</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<h1>Add User</h1>
+<br>
+
+<form th:method="POST" th:action="@{/admin}" th:object="${user}" >
+
+    <input type="hidden" th:field="*{id}">
+    <label for="name">Name:</label>
+    <input type="text" th:field="*{name}" id="name">
+    <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+    <br><br>
+    <label for="lastName">Last Name:</label>
+    <input type="text" th:field="*{lastName}" id="lastName">
+    <div th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></div>
+    <br><br>
+    <label for="age">Age:</label>
+    <input type="text" th:field="*{age}" id="age">
+    <div th:if="${#fields.hasErrors('age')}" th:errors="*{age}"></div>
+    <br><br>
+    <label for="email">E-mail:</label>
+    <input type="text" th:field="*{email}" id="email">
+    <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+    <br><br>
+    <label for="username">Login(username): </label>
+    <input type="text" th:field="*{username}" id="username"/>
+    <div style="color:red" th:if="${#fields.hasErrors('username')}" th:errors="*{username}">User error</div>
+    <br/><br/>
+    <label for="password">Password: </label>
+    <input type="password" th:field="*{password}" id="password"/>
+    <div style="color:red" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Password error</div>
+    <br/><br/>
+    <p>
+        <label>Roles:
+            <input type="checkbox" name="roles"
+                   th:each="role : ${roles}"
+                   th:text="${role.username}"
+                   th:value="${role.id}"
+                   th:field="*{roleList}"/>
+        </label>
+    </p>
+    <input type="submit" value="add User"/>
+
+</form>
+<br><br>
+<p> Return to  <a href="/admin/users">list users</a></p>
+<form th:method="POST" th:action="@{/logout}">
+    <input type="submit" value="Logout!"/>
+</form>
+
+</body>

@@ -3,8 +3,10 @@ package ru.kata.spring.boot_security.demo.model;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import ru.kata.spring.boot_security.demo.model.validator.CheckEmail;
 
 import javax.persistence.*;
+import javax.validation.constraints.*;
 import java.util.*;
 
 @Entity
@@ -14,38 +16,68 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column
+    @Size(min = 2, max = 15, message = "Name must be min 2 symbols")
+    @NotBlank(message = "Name should not be empty")
+    @Pattern(regexp = "^[A-Za-zА-Яа-яЁё]{2,15}$")
     private String name;
-    @Column
+    @Column(name = "username", nullable = false, unique = true)
+    @NotBlank(message = "Username should not be empty")
+    @Size(min = 4, max = 50, message = "Username must be min 4 symbols")
+    @Pattern(regexp = "^[A-Za-z]{4,50}$")
     private String username;
+    @Column(name = "password", nullable = false)
+    @NotBlank(message = "Password should not be empty")
+    @Size(min = 8, max = 50, message = "Password must be min 4 symbols")
+    @Pattern(regexp = "^[a-zA-Z0-9]+$")
+    private String password;
+    @Column(name = "last_name")
+    @Size(min = 2, max = 25, message = "Last Name must be min 2 symbols")
+    @NotBlank(message = "Last Name should not be empty")
+    @Pattern(regexp = "^[A-Za-zА-Яа-яЁё]{2,25}$")
+    private String lastName;
     @Column
+    @NotNull(message = "Age should not be empty")
+    @Min(value = 18, message = "must be greater than 17")
+    @Max(value = 100, message = "must be less than 101")
     private int age;
     @Column
+    @Size(min = 7, max = 40, message = "Email must be min 7 symbols")
+    @CheckEmail
     private String email;
-    @Column
-    private String password;
-    @ManyToMany(cascade = CascadeType.MERGE,fetch = FetchType.LAZY)
-    @JoinTable(name = "user_role",
-            joinColumns = @JoinColumn (name = "users_id"),
-            inverseJoinColumns = @JoinColumn(name = "roles_id"))
-    private Set<Role> roles = new HashSet<>();
 
-    public User() {
-    }
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
+    @JoinTable(name = "users_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roleList = new HashSet<>();
 
-    public User(String username, int age, String email,String password, String name) {
+    public User() {   }
+
+    public User(String username, String password, String email) {
         this.username = username;
-        this.age = age;
-        this.email = email;
         this.password = password;
-        this.name = name;
+        this.email = email;
     }
 
+    public User(String username, String password, String email, Set<Role> roleList) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.roleList = roleList;
+    }
     public Long getId() {
         return id;
     }
-
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public void setUsername(String name) {
@@ -77,12 +109,12 @@ public class User implements UserDetails {
     }
 
 
-    public Set<Role> getRoles() {
-        return roles;
+    public Set<Role> getRoleList() {
+        return roleList;
     }
 
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
+    public void setRoleList(Set<Role> roleList) {
+        this.roleList = roleList;
     }
 
     public void setPassword(String password) {
@@ -91,9 +123,9 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return getRoles();
-    }
 
+        return getRoleList();
+    }
     @Override
     public String getPassword() {
         return password;
@@ -122,6 +154,22 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", email='" + email + '\'' +
+                '}';
+    }
+    public String roleToString(){
+        StringBuilder sb = new StringBuilder();
+        for(Role role: roleList){
+            sb.append(role.getNameRole()).append(" ");
+        }
+        return sb.toString();
     }
 }
 

@@ -8,21 +8,29 @@
 <table border="1">
     <tr>
         <th>id</th>
-        <th>name</th>
-        <th>age</th>
-        <th>email</th>
+        <th>Name</th>
+        <th>Last Name</th>
+        <th>Age</th>
+        <th>E-mail</th>
+        <th>Username</th>
+        <th>Password</th>
+        <th>Roles</th>
     </tr>
-    <tr th:object="${user}">
+        <tr th:object="${user}">
         <td th:text="${user.getId()}"></td>
         <td th:text="${user.getName()}"></td>
+        <td th:text="${user.getLastName()}"></td>
         <td th:text="${user.getAge()}"></td>
         <td th:text="${user.getEmail()}"></td>
-
+        <td th:text="${user.getUsername()}"></td>
+        <td th:text="${user.getPassword()}"></td>
+        <td th:text="${user.getRoles()}"></td>
     </tr>
 </table>
-<br>
-<input type="button" value="logout"
-       onclick="window.location.href='/logout'"/>
-
+<p> Return to <a href="/">main page</a></p>
+<br><br>
+<form th:method="POST" th:action="@{/logout}">
+    <input type="submit" value="Logout!"/>
+</form>
 </body>
 </html>
